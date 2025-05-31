@@ -1,0 +1,205 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/roomLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/room">
+
+
+    <ImageView
+        android:id="@+id/bed"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:src="@drawable/bed"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.25"
+        app:layout_constraintVertical_bias="0.99" />
+
+
+    <ImageView
+        android:id="@+id/door"
+        android:layout_width="100dp"
+        android:layout_height="185dp"
+        android:src="@drawable/door"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.48"
+        app:layout_constraintVertical_bias="0.3"
+        android:translationZ="1dp"
+        />
+    <ImageView
+        android:id="@+id/water"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/water"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.499"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.761"
+        android:translationZ="1dp"
+        />
+
+    <ImageView
+        android:id="@+id/food"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/food"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.395"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.761"
+        android:translationZ="1dp"
+        />
+
+    <!-- Aircon -->
+    <ImageView
+        android:id="@+id/bone"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:src="@drawable/bone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.775"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.953"
+        android:translationZ="1dp"
+        />
+
+    <ImageView
+        android:id="@+id/aircon"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/aircon"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.65"
+        app:layout_constraintVertical_bias="0.02" />
+
+
+    <ImageView
+        android:id="@+id/radio"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:src="@drawable/radio"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.685"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.426"
+        android:translationZ="1dp"
+        />
+    <ImageView
+        android:id="@+id/petImage"
+        android:layout_width="57dp"
+        android:layout_height="72dp"
+        android:contentDescription="Pet Image"
+        android:src="@drawable/blackcat1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.388"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.991"
+        android:translationZ="0dp"
+        />
+
+
+
+
+
+
+    <LinearLayout
+        android:id="@+id/statusCard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/status_card_bg"
+        android:elevation="6dp"
+        android:padding="12dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_margin="16dp">
+
+        <TextView
+            android:id="@+id/healthText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="❤️ Health: 100"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/hungerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🍖 Hunger: 50"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/thirstText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="💧 Thirst: 75"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/energyText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="⚡ Energy: 80"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/playText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎾 Play: 60"
+            android:textColor="#000000"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/achievementsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="🏆 Achievements"
+            android:textSize="16sp"
+            android:textColor="#000000"
+            android:background="?android:selectableItemBackgroundBorderless"
+            android:contentDescription="Achievements"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+
+    <!-- Settings Button -->
+    <Button
+        android:id="@+id/settings"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="?android:selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:contentDescription="Settings"
+        android:focusable="true"
+        android:text="⚙️"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

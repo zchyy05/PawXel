@@ -1,0 +1,75 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/jumpbg">
+
+    <!-- Background image -->
+    <ImageView
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:src="@drawable/jumpbg" />
+
+    <!-- High Score text - centered at top -->
+    <TextView
+        android:id="@+id/highScoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="High Score: 0"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginTop="16dp" />
+
+    <!-- Current Score - top start -->
+    <TextView
+        android:id="@+id/scoreText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Score: 0"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_margin="16dp"
+        android:layout_gravity="top|start" />
+
+    <!-- Back to Room button - top end -->
+    <Button
+        android:id="@+id/backToRoomButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Room"
+        android:textSize="14sp"
+        android:layout_gravity="top|end"
+        android:layout_margin="12dp"
+        android:visibility="visible" />
+
+    <!-- Dog (player) -->
+    <ImageView
+        android:id="@+id/dog"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_gravity="bottom|start"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="70dp"
+        android:src="@drawable/blackdog1" />
+
+    <!-- Obstacles -->
+    <ImageView android:id="@+id/obstacle1" android:layout_width="40dp" android:layout_height="80dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/bomb"/>
+    <ImageView android:id="@+id/obstacle2" android:layout_width="40dp" android:layout_height="60dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/poo"/>
+    <ImageView android:id="@+id/obstacle3" android:layout_width="40dp" android:layout_height="80dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/bomb"/>
+    <ImageView android:id="@+id/obstacle4" android:layout_width="40dp" android:layout_height="60dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/poo"/>
+    <ImageView android:id="@+id/obstacle5" android:layout_width="40dp" android:layout_height="80dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/bomb"/>
+    <ImageView android:id="@+id/obstacle6" android:layout_width="40dp" android:layout_height="60dp" android:layout_gravity="bottom" android:layout_marginBottom="60dp" android:src="@drawable/poo"/>
+
+    <!-- Try Again button - center -->
+    <Button
+        android:id="@+id/tryAgainButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Try Again"
+        android:textSize="16sp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+</FrameLayout>

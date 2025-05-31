@@ -1,0 +1,203 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="16dp"
+    android:background="@drawable/gradient_background">
+
+    <!-- Left Side: Cat Preview -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/catColorTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Customize Your Cat"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Cat Preview -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:background="@drawable/image_frame"
+            android:padding="12dp">
+
+            <ImageView
+                android:id="@+id/catPreview"
+                android:layout_width="100dp"
+                android:layout_height="120dp"
+                android:src="@drawable/whitecat2"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Your Cat"
+                android:textColor="@android:color/white"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Pet Name Input -->
+        <EditText
+            android:id="@+id/petNameInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter your cat's name"
+            android:textColorHint="#CCCCCC"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp"
+            android:backgroundTint="@android:color/white"
+            android:padding="10dp"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <!-- Right Side: Color Selection and Navigation -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="16dp">
+
+        <!-- Color Selection Text -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Choose Color:"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <!-- Color Buttons Grid -->
+        <GridLayout
+            android:id="@+id/catColorGrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:rowCount="2"
+            android:alignmentMode="alignMargins"
+            android:layout_marginBottom="16dp"
+            android:rowOrderPreserved="false">
+
+            <Button
+                android:id="@+id/colorBlack"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#8B4513"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="Black"
+                android:textColor="@android:color/white"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/colorBrown"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#8B4513"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="Brown"
+                android:textColor="@android:color/white"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/colorCream"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#F5DEB3"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="Cream"
+                android:textColor="#333333"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/colorGray"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#808080"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="Gray"
+                android:textColor="@android:color/white"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/colorWhite"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#FFFFFF"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="White"
+                android:textColor="#333333"
+                android:textSize="8sp" />
+
+            <Button
+                android:id="@+id/colorOrange"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/color_button_background"
+                android:backgroundTint="#FF8C00"
+                android:layout_margin="6dp"
+                android:elevation="4dp"
+                android:text="Orange"
+                android:textColor="@android:color/white"
+                android:textSize="8sp" />
+        </GridLayout>
+
+        <!-- Navigation Buttons -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:layout_marginEnd="12dp"
+                android:background="@drawable/button_background"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:elevation="8dp"
+                android:padding="10dp"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continue"
+                android:background="@android:color/white"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:elevation="8dp"
+                android:padding="10dp"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
