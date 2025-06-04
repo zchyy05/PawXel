@@ -1,0 +1,550 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/gradient_background"
+    android:padding="20dp"
+    android:scrollbars="vertical"
+    android:fadeScrollbars="true">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="24dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/formTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create New User"
+                    android:textColor="@android:color/white"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:fontFamily="sans-serif-medium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Set up your virtual pet companion"
+                    android:textColor="#E0FFFFFF"
+                    android:textSize="16sp"
+                    android:layout_marginTop="4dp" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                app:cardCornerRadius="36dp"
+                app:cardElevation="8dp"
+                app:cardBackgroundColor="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/petAvatarPreview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@android:drawable/ic_menu_myplaces"
+                    android:padding="16dp"
+                    android:scaleType="centerCrop" />
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_menu_myplaces"
+                                android:layout_marginEnd="12dp"
+                                app:tint="#667eea" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Account Information"
+                                android:textColor="#333333"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/usernameField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Username"
+                            android:inputType="text"
+                            android:textSize="16sp"
+                            android:background="@drawable/edit_text_outline_account"
+                            android:textColorHint="#667eea"
+                            android:textColor="@color/black"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp"/>
+
+                        <EditText
+                            android:id="@+id/passwordField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Password"
+                            android:inputType="textPassword"
+                            android:textSize="16sp"
+                            android:background="@drawable/edit_text_outline_account"
+                            android:textColorHint="#667eea"
+                            android:textColor="@color/black"
+                            android:padding="12dp"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_menu_gallery"
+                                android:layout_marginEnd="12dp"
+                                app:tint="#764ba2" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pet Details"
+                                android:textColor="#333333"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/petNameField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Pet Name"
+                            android:inputType="textCapWords"
+                            android:textSize="16sp"
+                            android:background="@drawable/edit_text_outline_pet_details"
+                            android:textColorHint="#764ba2"
+                            android:textColor="@color/black"
+                            android:padding="12dp"
+                            android:layout_marginBottom="12dp"/>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/petTypeField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:hint="Pet Type"
+                                android:inputType="textCapWords"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_details"
+                                android:textColorHint="#764ba2"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                            <EditText
+                                android:id="@+id/petColorField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="Pet Color"
+                                android:inputType="textCapWords"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_details"
+                                android:textColorHint="#764ba2"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_menu_agenda"
+                                android:layout_marginEnd="12dp"
+                                app:tint="#f093fb" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pet Statistics"
+                                android:textColor="#333333"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <EditText
+                                android:id="@+id/healthField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:hint="Health (%)"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_stats"
+                                android:textColorHint="#f093fb"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                            <EditText
+                                android:id="@+id/hungerField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="Hunger (%)"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_stats"
+                                android:textColorHint="#f093fb"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <EditText
+                                android:id="@+id/thirstField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:hint="Thirst (%)"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_stats"
+                                android:textColorHint="#f093fb"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                            <EditText
+                                android:id="@+id/energyField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="Energy (%)"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_pet_stats"
+                                android:textColorHint="#f093fb"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                        </LinearLayout>
+
+                        <EditText
+                            android:id="@+id/playField"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Play Level (%)"
+                            android:inputType="number"
+                            android:textSize="16sp"
+                            android:background="@drawable/edit_text_outline_pet_stats"
+                            android:textColorHint="#f093fb"
+                            android:textColor="@color/black"
+                            android:padding="12dp"/>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="@android:color/white">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
+
+                            <ImageView
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:src="@android:drawable/ic_menu_recent_history"
+                                android:layout_marginEnd="12dp"
+                                app:tint="#667eea" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Activity Counters"
+                                android:textColor="#333333"
+                                android:textSize="18sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_marginBottom="12dp">
+
+                            <EditText
+                                android:id="@+id/fedCountField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:hint="Fed Count"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_activity"
+                                android:textColorHint="#667eea"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                            <EditText
+                                android:id="@+id/pettingCountField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="8dp"
+                                android:hint="Petting Count"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_activity"
+                                android:textColorHint="#667eea"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <EditText
+                                android:id="@+id/showeredCountField"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginEnd="8dp"
+                                android:hint="Showered Count"
+                                android:inputType="number"
+                                android:textSize="16sp"
+                                android:background="@drawable/edit_text_outline_activity"
+                                android:textColorHint="#667eea"
+                                android:textColor="@color/black"
+                                android:padding="12dp"/>
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical"
+                                android:layout_marginStart="8dp">
+
+                                <EditText
+                                    android:id="@+id/highScoreField"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="High Score"
+                                    android:inputType="number"
+                                    android:textSize="16sp"
+                                    android:background="@drawable/edit_text_outline_activity"
+                                    android:textColorHint="#667eea"
+                                    android:textColor="@color/black"
+                                    android:padding="12dp"/>
+
+                                <EditText
+                                    android:id="@+id/catchHighScoreField"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:hint="Catch Game High Score"
+                                    android:inputType="number"
+                                    android:textSize="16sp"
+                                    android:background="@drawable/edit_text_outline_activity"
+                                    android:textColorHint="#667eea"
+                                    android:textColor="@color/black"
+                                    android:padding="12dp"
+                                    android:layout_marginTop="8dp"/>
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="end"
+            android:layout_marginTop="24dp">
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:text="Cancel"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_marginEnd="16dp"
+                android:minWidth="120dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"/>
+
+            <Button
+                android:id="@+id/saveUserButton"
+                android:layout_width="wrap_content"
+                android:layout_height="56dp"
+                android:text="Save User"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:background="@drawable/save_button_background"
+                android:elevation="4dp"
+                android:minWidth="140dp"
+                android:drawableStart="@android:drawable/ic_menu_save"
+                android:drawableTint="@android:color/white"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp"
+                android:drawablePadding="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
