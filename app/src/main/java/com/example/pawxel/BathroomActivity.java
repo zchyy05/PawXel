@@ -2,7 +2,6 @@ package com.example.pawxel;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +9,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.pawxel.database.AppDatabase;
+import com.example.pawxel.database.User;
+import com.example.pawxel.database.UserDao;
 
 import java.util.Objects;
 
@@ -27,6 +30,8 @@ public class BathroomActivity extends BaseActivity {
     private boolean hasCountedShower = false;
 
     private String username;
+    private User user;
+    private UserDao userDao;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -35,24 +40,42 @@ public class BathroomActivity extends BaseActivity {
         setContentView(R.layout.activity_bathroom);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-        username = prefs.getString("loggedInUser", null);
+        username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE)
+                .getString("loggedInUser", null);
+
+        userDao = AppDatabase.getInstance(this).userDao();
+        user = userDao.getUserByUsername(username);
 
         shower = findViewById(R.id.shower);
         petImage = findViewById(R.id.petImage);
         healthText = findViewById(R.id.healthText);
 
-        // Load health (if passed via intent or fallback to stored)
-        health = getIntent().getIntExtra("health", prefs.getInt("health_" + username, 100));
+        // Load health from Room (passed via intent OR user.health)
+        health = getIntent().getIntExtra("health", user.health);
         updateHealthDisplay();
 
-        // Load pet image
-        String pet = prefs.getString("pet_" + username, "dog");
-        String petColor = prefs.getString("petColor_" + username, "white");
+        setPetAppearance(user.petType, user.petColor);
+
+        enableDrag(petImage);
+        enableDrag(shower);
+        startHealthCheckLoop();
+
+        findViewById(R.id.backToRoomButton).setOnClickListener(v -> {
+            user.health = health;
+            userDao.insert(user);
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("updatedHealth", health);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        });
+    }
+
+    private void setPetAppearance(String pet, String color) {
         int petDrawable = R.drawable.whitedog1;
 
         if ("dog".equals(pet)) {
-            switch (petColor) {
+            switch (color) {
                 case "gray": petDrawable = R.drawable.graydog1; break;
                 case "brown": petDrawable = R.drawable.browndog1; break;
                 case "white": petDrawable = R.drawable.whitedog2; break;
@@ -61,7 +84,7 @@ public class BathroomActivity extends BaseActivity {
                 case "cream": petDrawable = R.drawable.creamdog1; break;
             }
         } else {
-            switch (petColor) {
+            switch (color) {
                 case "black": petDrawable = R.drawable.blackcat1; break;
                 case "brown": petDrawable = R.drawable.browncat1; break;
                 case "cream": petDrawable = R.drawable.creamcat1; break;
@@ -72,17 +95,6 @@ public class BathroomActivity extends BaseActivity {
         }
 
         petImage.setImageResource(petDrawable);
-
-        enableDrag(petImage);
-        enableDrag(shower);
-        startHealthCheckLoop();
-
-        findViewById(R.id.backToRoomButton).setOnClickListener(v -> {
-            Intent resultIntent = new Intent();
-            resultIntent.putExtra("updatedHealth", health);
-            setResult(RESULT_OK, resultIntent);
-            finish();
-        });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -103,7 +115,7 @@ public class BathroomActivity extends BaseActivity {
                     if (currentlyTouching && !showerTouching) {
                         if (!isMuted()) {
                             if (showerSoundPlayer == null) {
-                                showerSoundPlayer = MediaPlayer.create(BathroomActivity.this, R.raw.shower_sound);
+                                showerSoundPlayer = MediaPlayer.create(this, R.raw.shower_sound);
                                 showerSoundPlayer.setLooping(true);
                                 showerSoundPlayer.start();
                             } else if (!showerSoundPlayer.isPlaying()) {
@@ -130,13 +142,7 @@ public class BathroomActivity extends BaseActivity {
         v1.getLocationOnScreen(loc1);
         v2.getLocationOnScreen(loc2);
 
-        int v1x = loc1[0], v1y = loc1[1];
-        int v2x = loc2[0], v2y = loc2[1];
-
-        int horizontalMargin = 250;
-        int verticalMargin = 250;
-
-        return Math.abs(v1x - v2x) < horizontalMargin && Math.abs(v1y - v2y) < verticalMargin;
+        return Math.abs(loc1[0] - loc2[0]) < 250 && Math.abs(loc1[1] - loc2[1]) < 250;
     }
 
     private void startHealthCheckLoop() {
@@ -146,18 +152,15 @@ public class BathroomActivity extends BaseActivity {
                 if (showerTouching) {
                     health = Math.min(100, health + 3);
                     updateHealthDisplay();
+                    user.health = health;
 
-                    SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-                    prefs.edit().putInt("health_" + username, health).apply();
-
-                    // ✅ Count only once per session
                     if (!hasCountedShower) {
-                        int showeredCount = prefs.getInt("showeredCount_" + username, 0);
-                        prefs.edit().putInt("showeredCount_" + username, showeredCount + 1).apply();
+                        user.showeredCount++;
                         hasCountedShower = true;
                     }
+
+                    userDao.insert(user);
                 } else {
-                    // Reset flag when user stops showering
                     hasCountedShower = false;
                 }
 

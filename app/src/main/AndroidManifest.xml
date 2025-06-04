@@ -58,6 +58,18 @@
             android:name=".BathroomActivity"
             android:screenOrientation="landscape"
             android:configChanges="orientation|screenSize" />
+
+        <activity android:name=".CatchGame"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize"/>
+
+        <activity android:name=".AdminDashboardActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize"/>
+
+        <activity android:name=".UserDetailActivity"
+            android:screenOrientation="landscape"
+            android:configChanges="orientation|screenSize" />
     </application>
 
 </manifest>

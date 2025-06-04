@@ -39,4 +39,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation ("pl.droidsonroids.gif:android-gif-drawable:1.2.29")
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    implementation ("com.google.android.material:material:1.11.0")
+
 }

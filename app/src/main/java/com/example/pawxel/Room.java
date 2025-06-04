@@ -1,19 +1,22 @@
 package com.example.pawxel;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
-import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.media.MediaPlayer;
-import android.app.AlertDialog;
 
+import com.example.pawxel.database.AppDatabase;
+import com.example.pawxel.database.User;
+import com.example.pawxel.database.UserDao;
 import com.example.pawxel.utils.MusicManager;
 
 import java.util.Objects;
@@ -26,16 +29,19 @@ public class Room extends BaseActivity {
     private int health, hunger, thirst, energy, play;
     private MediaPlayer mediaPlayer;
     private MediaPlayer radioPlayer;
-    private ImageView bed;
-    private TextView healthText, hungerText, thirstText, energyText, playText;
-    private Handler statHandler = new Handler();
-    private Runnable statRunnable;
-    private ImageView petImage;
+    private MediaPlayer airconPlayer;
 
     private boolean radioPlaying = false;
-    private ImageView radio;
-    private MediaPlayer airconPlayer;
     private boolean isAirconOn = false;
+
+    private Handler statHandler = new Handler();
+    private Runnable statRunnable;
+
+    private ImageView petImage, bed, radio;
+    private TextView healthText, hungerText, thirstText, energyText, playText;
+
+    private UserDao userDao;
+    private User user;
 
     @SuppressLint("ClickableViewAccessibility")
     @Override
@@ -44,15 +50,17 @@ public class Room extends BaseActivity {
         setContentView(R.layout.activity_room);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-        String username = prefs.getString("loggedInUser", null);
+        String username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE)
+                .getString("loggedInUser", null);
 
-        // Load saved stats per user
-        health = prefs.getInt("health_" + username, 50);
-        hunger = prefs.getInt("hunger_" + username, 50);
-        thirst = prefs.getInt("thirst_" + username, 75);
-        energy = prefs.getInt("energy_" + username, 80);
-        play = prefs.getInt("play_" + username, 60);
+        userDao = AppDatabase.getInstance(this).userDao();
+        user = userDao.getUserByUsername(username);
+
+        health = user.health;
+        hunger = user.hunger;
+        thirst = user.thirst;
+        energy = user.energy;
+        play = user.play;
 
         petImage = findViewById(R.id.petImage);
         ImageView food = findViewById(R.id.food);
@@ -69,36 +77,21 @@ public class Room extends BaseActivity {
         bed = findViewById(R.id.bed);
         radio = findViewById(R.id.radio);
         TextView achievementsButton = findViewById(R.id.achievementsButton);
+
         achievementsButton.setOnClickListener(v -> showAchievementsPopup());
 
-        // Load pet data per user
-        String pet = prefs.getString("pet_" + username, "dog");
-        String petColor = prefs.getString("petColor_" + username, "white");
-        int petDrawableRes = R.drawable.whitedog1;
+        setPetAppearance(user.petType, user.petColor);
 
-        if ("dog".equals(pet)) {
-            switch (petColor) {
-                case "gray": petDrawableRes = R.drawable.graydog1; break;
-                case "brown": petDrawableRes = R.drawable.browndog1; break;
-                case "white": petDrawableRes = R.drawable.whitedog2; break;
-                case "black": petDrawableRes = R.drawable.blackdog1; break;
-                case "golden": petDrawableRes = R.drawable.yellowdog1; break;
-                case "cream": petDrawableRes = R.drawable.creamdog1; break;
-            }
-        } else {
-            switch (petColor) {
-                case "black": petDrawableRes = R.drawable.blackcat1; break;
-                case "brown": petDrawableRes = R.drawable.browncat1; break;
-                case "cream": petDrawableRes = R.drawable.creamcat1; break;
-                case "gray": petDrawableRes = R.drawable.graycat1; break;
-                case "white": petDrawableRes = R.drawable.whitecat1; break;
-                case "orange": petDrawableRes = R.drawable.yellowcat1; break;
-            }
-        }
+        ImageView chicken = findViewById(R.id.chicken);
 
-        petImage.setImageResource(petDrawableRes);
+        chicken.setOnClickListener(v -> {
+            Intent intent = new Intent(Room.this, CatchGame.class);
+            intent.putExtra("petType", user.petType);
+            intent.putExtra("petColor", user.petColor);
+            startActivity(intent);
 
-        // Drag interaction
+        });
+
         petImage.setOnTouchListener((v, event) -> {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
@@ -114,51 +107,67 @@ public class Room extends BaseActivity {
                 case MotionEvent.ACTION_UP:
                     float deltaX = Math.abs(event.getRawX() - (v.getX() - dX));
                     float deltaY = Math.abs(event.getRawY() - (v.getY() - dY));
-                    int pettingCount = prefs.getInt("pettingCount_" + username, 0);
-                    prefs.edit().putInt("pettingCount_" + username, pettingCount + 1).apply();
 
+                    user.pettingCount++;
                     if (deltaX < 10 && deltaY < 10) {
                         play = Math.min(100, play + 5);
+                        user.play = play;
                         updateStatsDisplay();
-                        playPetSound(pet);
+                        playPetSound(user.petType);
                     }
                     if (isNear(petImage, bed)) {
                         energy = Math.min(100, energy + 5);
+                        user.energy = energy;
                         updateStatsDisplay();
                     }
+                    userDao.insert(user);
                     return true;
                 default:
                     return false;
             }
         });
+        float bottomOffset = -40f;
+        food.setOnClickListener(v -> {
+            petImage.animate()
+                    .x(food.getX() + food.getWidth() / 2f - petImage.getWidth() / 2f)
+                    .y(food.getY() + food.getHeight() / 2f - petImage.getHeight() / 2f + bottomOffset)
+                    .setDuration(500)
+                    .withEndAction(() -> {
+                hunger = Math.min(100, hunger + 5);
+                health = Math.min(100, health + 5);
+                thirst = Math.max(0, thirst - 2);
+                user.fedCount++;
+                user.hunger = hunger;
+                user.health = health;
+                user.thirst = thirst;
+                updateStatsDisplay();
+                userDao.insert(user);
+            }).start();
+        });
 
-        // Room Interactions
-        food.setOnClickListener(v -> petImage.animate().x(food.getX()).y(food.getY() - 80).setDuration(500).withEndAction(() -> {
-            hunger = Math.min(100, hunger + 5);
-            health = Math.min(100, health + 5);
-            thirst = Math.max(0, thirst - 2);
-            int fedCount = prefs.getInt("fedCount_" + username, 0);
-            prefs.edit().putInt("fedCount_" + username, fedCount + 1).apply();
-            updateStatsDisplay();
-        }).start());
-
-        water.setOnClickListener(v -> petImage.animate().x(water.getX()).y(food.getY() - 80).setDuration(500).withEndAction(() -> {
-            thirst = Math.min(100, thirst + 5);
-            updateStatsDisplay();
-        }).start());
+        water.setOnClickListener(v -> {
+            petImage.animate()
+                    .x(water.getX() + water.getWidth() / 2f - petImage.getWidth() / 2f)
+                    .y(water.getY() + water.getHeight() / 2f - petImage.getHeight() / 2f + bottomOffset)
+                    .setDuration(500)
+                    .withEndAction(() -> {
+                thirst = Math.min(100, thirst + 5);
+                user.thirst = thirst;
+                updateStatsDisplay();
+                userDao.insert(user);
+            }).start();
+        });
 
         door.setOnClickListener(v -> {
-            prepareForTransition();
             Intent intent = new Intent(Room.this, BathroomActivity.class);
             intent.putExtra("health", health);
             startActivityForResult(intent, 101);
         });
 
         bone.setOnClickListener(v -> {
-            prepareForTransition();
             Intent intent = new Intent(Room.this, JumpGameActivity.class);
-            intent.putExtra("pet", pet);
-            intent.putExtra("petColor", petColor);
+            intent.putExtra("pet", user.petType);
+            intent.putExtra("petColor", user.petColor);
             startActivity(intent);
         });
 
@@ -167,24 +176,41 @@ public class Room extends BaseActivity {
                 Toast.makeText(this, "Music is muted", Toast.LENGTH_SHORT).show();
                 return;
             }
+
             if (radioPlaying) {
-                if (radioPlayer != null) {
-                    radioPlayer.stop();
-                    radioPlayer.release();
-                    radioPlayer = null;
-                }
+                stopPlayer(radioPlayer);
+                radioPlayer = null;
                 radioPlaying = false;
+
                 MusicManager.start(this);
                 petImage.clearAnimation();
             } else {
+                stopPlayer(radioPlayer);
+                radioPlayer = null;
+
                 MusicManager.pause();
+
                 radioPlayer = MediaPlayer.create(this, R.raw.bed);
-                radioPlayer.setLooping(true);
-                radioPlayer.start();
-                radioPlaying = true;
-                petImage.startAnimation(android.view.animation.AnimationUtils.loadAnimation(this, R.anim.cat_listening));
+                if (radioPlayer != null) {
+                    radioPlayer.setLooping(true);
+                    radioPlayer.setOnErrorListener((mp, what, extra) -> {
+                        Toast.makeText(this, "Radio error", Toast.LENGTH_SHORT).show();
+                        return true;
+                    });
+                    try {
+                        radioPlayer.start();
+                        radioPlaying = true;
+                        petImage.startAnimation(AnimationUtils.loadAnimation(this, R.anim.cat_listening));
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                        Toast.makeText(this, "Error starting radio", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "Failed to create radio player", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
         aircon.setOnClickListener(v -> {
             if (isMuted()) {
@@ -192,11 +218,7 @@ public class Room extends BaseActivity {
                 return;
             }
             if (isAirconOn) {
-                if (airconPlayer != null) {
-                    airconPlayer.stop();
-                    airconPlayer.release();
-                    airconPlayer = null;
-                }
+                stopPlayer(airconPlayer);
                 isAirconOn = false;
             } else {
                 airconPlayer = MediaPlayer.create(this, R.raw.aircon);
@@ -216,25 +238,24 @@ public class Room extends BaseActivity {
                                 setMuted(!isMuted());
                                 if (isMuted()) {
                                     MusicManager.pause();
-                                    if (radioPlayer != null) radioPlayer.pause();
-                                    if (airconPlayer != null) airconPlayer.pause();
+                                    stopPlayer(radioPlayer);
+                                    stopPlayer(airconPlayer);
                                 } else if (!radioPlaying) {
                                     MusicManager.start(Room.this);
                                 }
                                 break;
                             case 1:
-                                SharedPreferences.Editor editor = prefs.edit();
-                                editor.putInt("health_" + username, health);
-                                editor.putInt("hunger_" + username, hunger);
-                                editor.putInt("thirst_" + username, thirst);
-                                editor.putInt("energy_" + username, energy);
-                                editor.putInt("play_" + username, play);
-                                editor.apply();
+                                user = userDao.getUserByUsername(username);
+                                user.health = health;
+                                user.hunger = hunger;
+                                user.thirst = thirst;
+                                user.energy = energy;
+                                user.play = play;
+                                userDao.insert(user);
+                                Toast.makeText(this, "Game Saved!", Toast.LENGTH_SHORT).show();
                                 break;
                             case 2:
-                                SharedPreferences.Editor logoutEditor = prefs.edit();
-                                logoutEditor.remove("loggedInUser");
-                                logoutEditor.apply();
+                                getSharedPreferences("PawxelPrefs", MODE_PRIVATE).edit().remove("loggedInUser").apply();
                                 Intent intent = new Intent(Room.this, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                                 startActivity(intent);
@@ -248,6 +269,62 @@ public class Room extends BaseActivity {
         startStatDecay();
     }
 
+
+
+    private void playPetSound(String petType) {
+        if (mediaPlayer != null) {
+            mediaPlayer.release();
+        }
+
+        int soundResId = "dog".equals(petType) ? R.raw.bark : R.raw.cat;
+        mediaPlayer = MediaPlayer.create(this, soundResId);
+        mediaPlayer.start();
+    }
+
+
+    private void setPetAppearance(String pet, String color) {
+        int drawable = R.drawable.whitedog1;
+        if ("dog".equals(pet)) {
+            switch (color) {
+                case "gray": drawable = R.drawable.graydog1; break;
+                case "brown": drawable = R.drawable.browndog1; break;
+                case "white": drawable = R.drawable.whitedog2; break;
+                case "black": drawable = R.drawable.blackdog1; break;
+                case "golden": drawable = R.drawable.yellowdog1; break;
+                case "cream": drawable = R.drawable.creamdog1; break;
+            }
+        } else {
+            switch (color) {
+                case "black": drawable = R.drawable.blackcat1; break;
+                case "brown": drawable = R.drawable.browncat1; break;
+                case "cream": drawable = R.drawable.creamcat1; break;
+                case "gray": drawable = R.drawable.graycat1; break;
+                case "white": drawable = R.drawable.whitecat1; break;
+                case "orange": drawable = R.drawable.yellowcat1; break;
+            }
+        }
+        petImage.setImageResource(drawable);
+    }
+
+    private void showAchievementsPopup() {
+        String username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE).getString("loggedInUser", null);
+        user = userDao.getUserByUsername(username);
+
+        StringBuilder achievements = new StringBuilder();
+        achievements.append("🏆 High Score: ").append(user.highScore).append("\n");
+        achievements.append("🎯 Catch Game High Score: ").append(user.catchHighScore).append("\n");
+        achievements.append("🍖 Times Fed: ").append(user.fedCount).append("\n");
+        achievements.append("🛁 Times Showered: ").append(user.showeredCount).append("\n");
+        achievements.append("🐾 Times Petted: ").append(user.pettingCount).append("\n");
+
+        new AlertDialog.Builder(this)
+                .setTitle("Your Achievements")
+                .setMessage(achievements.toString())
+                .setPositiveButton("Close", null)
+                .show();
+    }
+
+
     private void updateStatsDisplay() {
         healthText.setText("❤️ Health: " + health);
         hungerText.setText("🍖 Hunger: " + hunger);
@@ -255,30 +332,6 @@ public class Room extends BaseActivity {
         energyText.setText("⚡ Energy: " + energy);
         playText.setText("🎾 Play: " + play);
     }
-    private void showAchievementsPopup() {
-        SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-        String username = prefs.getString("loggedInUser", "Player");
-
-        StringBuilder achievements = new StringBuilder();
-
-        // Fix: use the exact same key from JumpGameActivity
-        int highScore = prefs.getInt("high_score_" + username, 0);
-        int fedCount = prefs.getInt("fedCount_" + username, 0);
-        int showeredCount = prefs.getInt("showeredCount_" + username, 0);
-        int pettingCount = prefs.getInt("pettingCount_" + username, 0);
-
-        achievements.append("🏆 High Score: ").append(highScore).append("\n");
-        achievements.append("🍖 Times Fed: ").append(fedCount).append("\n");
-        achievements.append("🛁 Times Showered: ").append(showeredCount).append("\n");
-        achievements.append("🐾 Times Petted: ").append(pettingCount).append("\n");
-
-        new AlertDialog.Builder(Room.this)
-                .setTitle("Your Achievements")
-                .setMessage(achievements.toString())
-                .setPositiveButton("Close", null)
-                .show();
-    }
-
 
     private void startStatDecay() {
         statRunnable = new Runnable() {
@@ -289,6 +342,14 @@ public class Room extends BaseActivity {
                 thirst = Math.max(0, thirst - 1);
                 energy = Math.max(0, energy - 1);
                 play = Math.max(0, play - 1);
+
+                user.health = health;
+                user.hunger = hunger;
+                user.thirst = thirst;
+                user.energy = energy;
+                user.play = play;
+                userDao.insert(user);
+
                 updateStatsDisplay();
                 statHandler.postDelayed(this, 10000);
             }
@@ -296,17 +357,20 @@ public class Room extends BaseActivity {
         statHandler.postDelayed(statRunnable, 10000);
     }
 
-    private void playPetSound(String petType) {
-        if (!isMuted()) {
-            MusicManager.start(this);
+    private void stopPlayer(MediaPlayer player) {
+        try {
+            if (player != null && player.isPlaying()) {
+                player.stop();
+            }
+            if (player != null) {
+                player.release();
+            }
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
         }
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
-        int soundRes = petType.equals("dog") ? R.raw.bark : R.raw.cat;
-        mediaPlayer = MediaPlayer.create(this, soundRes);
-        mediaPlayer.start();
     }
+
+
 
     private boolean isNear(View pet, View target) {
         int[] petLocation = new int[2];
@@ -319,17 +383,47 @@ public class Room extends BaseActivity {
     @Override
     protected void onDestroy() {
         statHandler.removeCallbacks(statRunnable);
-        if (mediaPlayer != null) mediaPlayer.release();
-        if (radioPlayer != null) radioPlayer.release();
-        if (airconPlayer != null) airconPlayer.release();
+
+        stopPlayer(mediaPlayer);
+        mediaPlayer = null;
+
+        stopPlayer(radioPlayer);
+        radioPlayer = null;
+
+        stopPlayer(airconPlayer);
+        airconPlayer = null;
+
         if (petImage != null) petImage.clearAnimation();
+
         if (!radioPlaying && !isMuted()) MusicManager.pause();
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        stopPlayer(radioPlayer);
+        radioPlayer = null;
+
+        stopPlayer(airconPlayer);
+        airconPlayer = null;
     }
 
     @Override
     protected boolean allowBackgroundMusic() {
         return true;
+    }
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        String username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE)
+                .getString("loggedInUser", null);
+        user = userDao.getUserByUsername(username);
+
+        updateStatsDisplay();
     }
 
     @Override
@@ -341,8 +435,18 @@ public class Room extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101 && resultCode == RESULT_OK) {
-            health = data.getIntExtra("updatedHealth", health);
+            String username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE)
+                    .getString("loggedInUser", null);
+
+            // 💡 RELOAD the latest user data from DB
+            user = userDao.getUserByUsername(username);
+
+            // Update health from result data
+            health = data.getIntExtra("updatedHealth", user.health);
+            user.health = health;
+
             updateStatsDisplay();
         }
     }
+
 }

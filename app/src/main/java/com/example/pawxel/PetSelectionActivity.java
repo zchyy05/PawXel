@@ -1,7 +1,6 @@
 package com.example.pawxel;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -11,9 +10,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.pawxel.utils.MusicManager;
+import com.example.pawxel.database.AppDatabase;
+import com.example.pawxel.database.User;
+import com.example.pawxel.database.UserDao;
 
 import java.util.Objects;
 
@@ -66,21 +65,33 @@ public class PetSelectionActivity extends BaseActivity {
                 return;
             }
 
-            SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-            prefs.edit()
-                    .putString("pet_" + username, selectedPet)
-                    .putString("pet", selectedPet)
-                    .apply();
+            UserDao userDao = AppDatabase.getInstance(this).userDao();
+            User user = userDao.getUserByUsername(username);
+
+            if (user == null) {
+                user = new User();
+                user.username = username;
+                user.petType = selectedPet;
+                user.health = 100;
+                user.hunger = 100;
+                user.thirst = 100;
+                user.energy = 100;
+                user.play = 100;
+                userDao.insert(user);
+            } else {
+                user.petType = selectedPet;
+                userDao.update(user);
+            }
+
 
 
             prepareForTransition();
-
             Intent intent = new Intent(this, selectedPet.equals("dog") ? DogColorActivity.class : CatColorActivity.class);
             startActivity(intent);
             finish();
         });
-    }
 
+    }
 
     private void selectPet(String petName, ImageView petImage) {
         dogPet.setBackgroundResource(0);

@@ -1,7 +1,6 @@
 package com.example.pawxel;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.media.MediaPlayer;
@@ -12,13 +11,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.example.pawxel.database.AppDatabase;
+import com.example.pawxel.database.User;
+import com.example.pawxel.database.UserDao;
+
 import java.util.Objects;
 
 public class DogColorActivity extends BaseActivity {
 
     private ImageView dogPreview;
     private EditText petNameInput;
-    private String selectedColor = "whitedog2";
+    private String selectedColor = "white";
     private Animation jumpAnimation;
     private MediaPlayer clickSound;
     private String username;
@@ -29,8 +32,8 @@ public class DogColorActivity extends BaseActivity {
         setContentView(R.layout.activity_dog_color);
         Objects.requireNonNull(getSupportActionBar()).hide();
 
-        SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-        username = prefs.getString("loggedInUser", null);
+        username = getSharedPreferences("PawxelPrefs", MODE_PRIVATE)
+                .getString("loggedInUser", null);
 
         jumpAnimation = AnimationUtils.loadAnimation(this, R.anim.jump);
         clickSound = MediaPlayer.create(this, R.raw.button);
@@ -67,19 +70,23 @@ public class DogColorActivity extends BaseActivity {
                 return;
             }
 
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.putString("petName_" + username, name);
-            editor.putString("petColor_" + username, selectedColor);
-            editor.apply();
+            UserDao userDao = AppDatabase.getInstance(this).userDao();
+            User user = userDao.getUserByUsername(username);
+            user.petColor = selectedColor;
+            user.petName = name;
+            userDao.insert(user);
 
             startActivity(new Intent(DogColorActivity.this, Welcome.class));
             finish();
         });
 
         backButton.setOnClickListener(v -> {
-            startActivity(new Intent(DogColorActivity.this, PetSelectionActivity.class));
+            Intent backIntent = new Intent(DogColorActivity.this, PetSelectionActivity.class);
+            backIntent.putExtra("username", username);
+            startActivity(backIntent);
             finish();
         });
+
     }
 
     private void updateDogPreview(String colorName) {

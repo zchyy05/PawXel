@@ -7,6 +7,10 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.pawxel.database.AppDatabase;
+import com.example.pawxel.database.User;
+import com.example.pawxel.database.UserDao;
+
 import java.util.Objects;
 
 public class SaveGameActivity extends BaseActivity {
@@ -29,18 +33,22 @@ public class SaveGameActivity extends BaseActivity {
         newGameButton = findViewById(R.id.newGameButton);
 
         SharedPreferences prefs = getSharedPreferences("PawxelPrefs", MODE_PRIVATE);
-        String username = prefs.getString("loggedInUser", "Player");
+        String username = prefs.getString("loggedInUser", null);
 
+        if (username == null) {
+            startActivity(new Intent(this, MainActivity.class));
+            finish();
+            return;
+        }
 
-        String pet = prefs.getString("pet_" + username, null);
-        String color = prefs.getString("petColor_" + username, null);
-        String petName = prefs.getString("petName_" + username, "Pet");
+        UserDao userDao = AppDatabase.getInstance(this).userDao();
+        User user = userDao.getUserByUsername(username);
 
         savedUsernameText.setText("Welcome back, " + username + "!");
-        savedPetNameText.setText("Your pet: " + petName);
+        savedPetNameText.setText("Your pet: " + (user.petName != null ? user.petName : "Pet"));
 
-        if (pet != null && color != null) {
-            int imageResId = getPetDrawable(pet, color);
+        if (user.petType != null && user.petColor != null) {
+            int imageResId = getPetDrawable(user.petType, user.petColor);
             if (imageResId != 0) {
                 savedPetImage.setImageResource(imageResId);
             }
@@ -53,11 +61,10 @@ public class SaveGameActivity extends BaseActivity {
         });
 
         newGameButton.setOnClickListener(v -> {
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.remove("pet_" + username);
-            editor.remove("petColor_" + username);
-            editor.remove("petName_" + username);
-            editor.apply();
+            user.petType = null;
+            user.petColor = null;
+            user.petName = null;
+            userDao.insert(user); // overwrite
 
             prepareForTransition();
             Intent intent = new Intent(this, PetSelectionActivity.class);
